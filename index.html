@@ -2,12 +2,12 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TEKNOTEM Servis Tablet V2</title>
+<title>Teknik Servis Hizmetleri</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="login" class="login">
-  <div class="login-card"><div class="brandmark big">T</div><h1>TEKNOTEM</h1><p>Servis Tablet V2</p>
+  <div class="login-card"><div class="brandmark big">T</div><h1>TEKNİK SERVİS</h1><p>Servis Tablet V2</p>
     <input id="loginUser" placeholder="Kullanıcı adı" value="admin">
     <input id="loginPass" placeholder="Şifre" type="password" value="1234">
     <button class="primary wide" onclick="login()">Giriş Yap</button>
@@ -20,7 +20,7 @@
 <div id="overlay" class="overlay" onclick="toggleMobileMenu()"></div>
 
 <aside class="sidebar">
- <div class="brand"><div class="brandmark">T</div><div><b>TEKNOTEM</b><small>Servis Tablet V2</small></div></div>
+ <div class="brand"><div class="brandmark">T</div><div><b id="sideBrandTitle">TEKNİK SERVİS</b><small>0850 885 00 82</small></div></div>
  <nav>
   <button class="nav active" data-page="dashboard">🏠 Ana Panel</button>
   <button class="nav" data-page="new">➕ Yeni Servis</button>
@@ -31,17 +31,17 @@
   <button class="nav" data-page="reports">📊 Raporlar</button>
   <button class="nav" data-page="settings">⚙️ Ayarlar</button>
  </nav>
- <div class="side-note">V2 • Yerel + bulut entegrasyonuna hazır<br><button class="logout" onclick="logout()">Çıkış</button></div>
+ <div class="side-note">Çağrı Merkezi: 0850 885 00 82<br><button class="logout" onclick="logout()">Çıkış</button></div>
 </aside>
 
 <main class="main">
-<!-- Header (Hamburger Butonlu) -->
+<!-- Header -->
 <header>
   <div style="display: flex; align-items: center;">
     <button class="hamburger-btn" onclick="toggleMobileMenu()">☰</button>
     <div>
-      <span class="eyebrow">TEKNİK SERVİS YÖNETİMİ</span>
-      <h1 id="pageTitle">Ana Panel</h1>
+      <span class="eyebrow" id="callCenterBadge">ÇAĞRI MERKEZİ: 0850 885 00 82</span>
+      <h1 id="pageTitle">TEKNİK SERVİS HİZMETLERİ</h1>
     </div>
   </div>
   <div class="header-actions">
@@ -100,11 +100,11 @@
 
 <section id="settings" class="page"><div class="panel"><div class="panelhead"><h2>Ayarlar</h2></div>
  <div class="grid">
-  <label>Servis Adı<input id="setName" value="TEKNOTEM SERVİS"></label><label>Telefon<input id="setPhone" value=""></label>
+  <label>Servis Başlığı Varsayılan<input id="setName" value="TEKNİK SERVİS HİZMETLERİ"></label><label>Telefon / Çağrı Merkezi<input id="setPhone" value="0850 885 00 82"></label>
   <label>KDV Varsayılan %<input id="setVat" type="number" value="20"></label><label>Servis Ücreti Varsayılan<input id="setTravel" type="number" value="0"></label>
  </div>
  <button class="primary" onclick="saveSettings()">Ayarları Kaydet</button>
- <div class="notice topgap">Bulut yedekleme için Firebase/Supabase bağlantısı bu V2'nin sonraki entegrasyon katmanına bağlanabilir. Bu sürüm cihaz içi veri kaybını önlemek için JSON yedekleme/içe aktarma sunar.</div>
+ <div class="notice topgap">JSON yedekleme/içe aktarma sunar.</div>
  <div class="actions"><button class="ghost" onclick="exportBackup()">JSON Yedeği Al</button><label class="filebtn">JSON Yedeği Yükle<input type="file" accept=".json" onchange="importBackup(event)"></label></div>
 </div></section>
 </main></div>
