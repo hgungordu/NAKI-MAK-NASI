@@ -128,6 +128,80 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
  </nav>
  <div class="side-note">Teknik Destek<br><button class="logout" onclick="logout()">Çıkış</button></div>
 </aside>
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Servis Yönetim Sistemi</title>
+<style>
+:root{--bg:#f8fafc;--card:#fff;--text:#1e293b;--blue:#2563eb;--line:#e2e8f0}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
+.app{display:flex;min-height:100vh}
+.sidebar{width:260px;background:#0f172a;color:white;padding:20px}
+.nav{display:block;width:100%;background:none;border:none;color:#94a3b8;padding:12px;text-align:left;cursor:pointer;border-radius:8px;font-size:15px;margin-bottom:5px}
+.nav.active{background:#1e293b;color:white}
+.main{flex:1;padding:30px}
+.page{display:none}
+.page.active{display:block}
+.panel{background:white;padding:25px;border-radius:12px;border:1px solid var(--line);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+label{font-weight:600;font-size:13px;display:block}
+input,select,textarea{width:100%;margin-top:5px;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+.part-row{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;margin-bottom:10px}
+.totalbox{font-size:20px;font-weight:bold;margin:20px 0}
+.primary-btn{background:#2563eb;color:white;border:0;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="sidebar">
+  <!-- Seçilen servis buraya otomatik yansıyacak -->
+  <h3 id="sidebarBrandTitle">YETKİLİ / ÖZEL SERVİS</h3>
+  <small style="color:#94a3b8;">Profesyonel Yönetim</small>
+  <nav id="navMenu" style="margin-top:20px;">
+   <button class="nav active" data-page="new">➕ Yeni İşlem</button>
+   <button class="nav" data-page="tedas">⚡ Detaylı Rapor (2. Sayfa)</button>
+  </nav>
+ </aside>
+ <main class="main" id="mainContent">
+  <!-- 1. Sayfa: Yeni İşlem -->
+  <section id="new" class="page active">
+   <div class="panel">
+    <h2>Yeni İşlem Kaydı</h2>
+    <div class="grid">
+     <label>Müşteri Adı<input id="fCustomer" placeholder="Ad Soyad"></label>
+     <label>Telefon<input id="fPhone" placeholder="05XXXXXXXXX"></label>
+     <!-- Marka seçimi / yazımı -->
+     <label>Servis / Marka Adı<input id="brand" placeholder="Örn: Arçelik / Bosch / Profilo" oninput="updateBrandTitle()"></label>
+    </div>
+    <div id="partsContainer"></div>
+    <button type="button" onclick="addPartRow()">+ Parça Ekle</button>
+    <div class="totalbox">Toplam: <strong id="total">₺0,00</strong></div>
+   </div>
+  </section>
+
+  <!-- 2. Sayfa: Uzun Uzadıya Detaylı Rapor -->
+  <section id="tedas" class="page">
+   <div class="panel">
+    <h2>2. Sayfa - Kurumsal Detaylı Hasar ve Arıza Raporu</h2>
+    <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;">TEDAŞ, sigorta veya kurumsal başvurular için her detayın uzun uzadıya yer aldığı resmi evrak dökümü.</p>
+    <div class="grid">
+     <label>Müşteri Vergi No / TC<input id="tedasTaxNo" placeholder="TC veya Vergi No"></label>
+     <label>Arıza Tarihi ve Saati<input type="datetime-local" id="tedasDateTime"></label>
+    </div>
+    <div class="grid">
+     <label>Cihaz Model / Seri No<input id="tedasModel" placeholder="Model ve Seri No"></label>
+     <label>Şebeke / Voltaj Durumu<input id="tedasVoltage" placeholder="Örn: Ani Voltaj Yükselmesi / 380V Faz Hatası"></label>
+    </div>
+    <label>Arıza ve Parça Değişim Detaylı Açıklaması (Uzun Rapor Metni)<textarea id="tedasNotes" rows="7" placeholder="Cihazın şebekeden kaynaklı ani akım değişimine maruz kaldığı, elektronik kartın yanı sıra ana bileşenlerin tamamen zarar gördüğü ve detaylı teknik inceleme neticesinde onarım bedelinin aşağıda dökümünü oluşturduğu rapor..."></textarea></label>
+    <button type="button" class="primary-btn" onclick="generateDetailedPageReport()">📄 2. Sayfa Resmi Detaylı Raporu Yazdır / PDF</button>
+   </div>
+  </section>
+ </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
 
 <main class="main">
 <header>
