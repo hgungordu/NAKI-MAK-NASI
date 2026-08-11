@@ -33,9 +33,10 @@ h2{font-size:19px;margin:0}
 .card strong{display:block;font-size:27px;margin-top:7px}
 .panel{padding:20px}
 .panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
-.primary,.ghost{border:0;border-radius:10px;padding:11px 16px;cursor:pointer}
+.primary,.ghost,.danger-btn{border:0;border-radius:10px;padding:11px 16px;cursor:pointer}
 .primary{background:var(--accent);color:white}
 .ghost{background:#edf1f5;color:#263243}
+.danger-btn{background:#fee2e2;color:#991b1b}
 .page{display:none}
 .page.active{display:block}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:15px}
@@ -74,6 +75,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
 .hamburger-btn { display:none; background:#253246; border:0; color:white; padding:8px 12px; border-radius:8px; font-size:20px; cursor:pointer; margin-right:12px; }
 .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99; }
 .overlay.active { display:block; }
+.part-row { display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; margin-bottom: 8px; align-items: center; }
 @media(max-width:1000px){
   .hamburger-btn { display:inline-block; }
   .sidebar { position:fixed; top:0; left:-270px; height:100vh; z-index:100; transition:left 0.3s ease; width:255px!important; }
@@ -92,6 +94,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
   .actions{justify-content:stretch}
   .actions button,.filebtn{width:100%;text-align:center}
   input, textarea, select { font-size: 16px !important; }
+  .part-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -183,11 +186,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
        <option>İptal / Reddedildi</option>
      </select>
    </label>
-   <label>Teknisyen
-     <select name="technician">
-       <option selected>Hannan Güngördü</option>
-     </select>
-   </label>
+   <label>Teknisyen / Sorumlu<input name="technician" value="Hannan Güngördü" required></label>
   </div>
 
   <div id="dynamicFields" class="grid" style="background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px dashed #cbd5e1; margin-bottom: 15px;"></div>
@@ -199,11 +198,22 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
    <label>Arıza Kodu / Kütüphane Notu<input name="code" placeholder="Örn. E18 / F3 / dE"></label>
   </div>
 
+  <!-- DEĞİŞEN PARÇALAR SEKSİYONU -->
+  <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <label style="font-size: 14px; font-weight: 800; color: var(--text);">Değişen Parçalar ve Fiyatları</label>
+      <button type="button" class="ghost" onclick="addPartRow()">+ Parça Ekle</button>
+    </div>
+    <div id="partsContainer">
+      <!-- Dinamik parça satırları buraya gelecek -->
+    </div>
+  </div>
+
   <div class="grid money">
-   <label>Parça Bedeli<input type="number" min="0" step=".01" name="parts" value="0"></label>
-   <label>İşçilik Bedeli<input type="number" min="0" step=".01" name="labor" value="0"></label>
-   <label>Servis / Yol Ücreti<input type="number" min="0" step=".01" name="travel" value="0"></label>
-   <label>KDV %<input type="number" min="0" step=".01" name="vat" value="20"></label>
+   <label>Parça Toplamı (Otomatik)<input type="number" min="0" step=".01" name="parts" id="partsTotalInput" value="0" readonly style="background:#eef2ff; font-weight:bold;"></label>
+   <label>İşçilik Bedeli<input type="number" min="0" step=".01" name="labor" id="laborInput" value="0"></label>
+   <label>Servis / Yol Ücreti<input type="number" min="0" step=".01" name="travel" id="travelInput" value="0"></label>
+   <label>KDV %<input type="number" min="0" step=".01" name="vat" id="vatInput" value="20"></label>
   </div>
 
   <label>Cihaz / Belge Görseli<input type="file" id="photo" accept="image/*"></label>
@@ -219,7 +229,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
     </div>
   </div>
 
-  <div class="actions"><button type="reset" class="ghost">Temizle</button><button class="primary">Kaydet ve Belgeyi Oluştur</button></div>
+  <div class="actions"><button type="reset" class="ghost" onclick="setTimeout(initParts, 50)">Temizle</button><button class="primary">Kaydet ve Belgeyi Oluştur</button></div>
  </form>
 </div></section>
 
@@ -230,7 +240,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
   <div class="panel">
     <div class="panelhead">
       <h2>Stok & Yedek Parça Kataloğu</h2>
-      <button class="primary" onclick="addPart()">+ Yeni Parça Ekle</button>
+      <button class="primary" onclick="addPartCatalog()">+ Yeni Parça Ekle</button>
     </div>
     <input id="partSearch" class="search" style="margin-bottom:15px;" placeholder="Parça veya kategori ara...">
     <div id="partsList"></div>
