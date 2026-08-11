@@ -11,6 +11,133 @@ const brandLogos = {
   "Grundig": `<svg viewBox="0 0 200 60" width="130" height="40"><rect width="200" height="60" rx="8" fill="#1e293b"/><text x="100" y="38" fill="#fff" font-family="Arial, sans-serif" font-weight="900" font-size="24" text-anchor="middle">GRUNDIG</text></svg>`,
   "Diğer": `<svg viewBox="0 0 200 60" width="130" height="40"><rect width="200" height="60" rx="8" fill="#111827"/><text x="100" y="38" fill="#fff" font-family="Arial, sans-serif" font-weight="900" font-size="22" text-anchor="middle">ÖZEL SERVİS</text></svg>`
 };
+document.addEventListener('DOMContentLoaded', () => {
+  addPartRow();
+});
+
+// Hangi markayı/servisi yazarsan sol üstte o görünecek
+function updateBrandTitle() {
+  const brandInput = document.getElementById('brand').value.trim();
+  const titleEl = document.getElementById('sidebarBrandTitle');
+  if (brandInput) {
+    titleEl.innerText = brandInput.toUpperCase() + " SERVİS";
+  } else {
+    titleEl.innerText = "YETKİLİ / ÖZEL SERVİS";
+  }
+}
+
+function addPartRow() {
+  const container = document.getElementById('partsContainer');
+  const row = document.createElement('div');
+  row.className = 'part-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Parça Adı (Örn: Kart, Pompa)" class="p-name" oninput="calculate()">
+    <input type="number" placeholder="Fiyat (₺)" class="p-price" oninput="calculate()">
+    <button type="button" onclick="this.parentElement.remove();calculate()" style="background:#fee2e2; color:#991b1b; border:0; border-radius:8px; padding:0 12px; cursor:pointer;">Sil</button>
+  `;
+  container.appendChild(row);
+  calculate();
+}
+
+function calculate() {
+  let total = 0;
+  document.querySelectorAll('.p-price').forEach(i => total += parseFloat(i.value) || 0);
+  document.getElementById('total').innerText = '₺' + total.toFixed(2);
+}
+
+// 2. Sayfa / Uzun Detaylı Rapor Oluşturma
+function generateDetailedPageReport() {
+  const brand = document.getElementById('brand').value || 'ÖZEL SERVİS';
+  const customer = document.getElementById('fCustomer').value || 'Belirtilmemiş';
+  const taxNo = document.getElementById('tedasTaxNo').value || 'Belirtilmemiş';
+  const dateTime = document.getElementById('tedasDateTime').value || 'Belirtilmemiş';
+  const model = document.getElementById('tedasModel').value || 'Belirtilmemiş';
+  const voltage = document.getElementById('tedasVoltage').value || 'Belirtilmemiş';
+  const notes = document.getElementById('tedasNotes').value || 'Açıklama girilmedi';
+  const total = document.getElementById('total').innerText;
+
+  // Parçaları liste haline getir
+  let partsHtml = '';
+  document.querySelectorAll('.part-row').forEach((r, index) => {
+    const name = r.querySelector('.p-name').value;
+    const price = r.querySelector('.p-price').value;
+    if(name) {
+      partsHtml += `<tr><td>${index + 1}</td><td>${name}</td><td style="text-align:right;">₺${price || 0}</td></tr>`;
+    }
+  });
+
+  let printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>${brand} - Detaylı Hasar ve Servis Raporu</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 40px; color: #111; line-height: 1.5; }
+        h2 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 12px; margin-bottom: 20px; }
+        .section-title { font-weight: bold; background: #f1f5f9; padding: 8px; margin-top: 20px; border-left: 4px solid #2563eb; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #cbd5e1; padding: 10px; font-size: 14px; }
+        th { background: #f8fafc; text-align: left; }
+        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; font-size: 14px; }
+        .notes-box { border: 1px solid #cbd5e1; padding: 15px; margin-top: 15px; border-radius: 6px; background: #fafafa; min-height: 80px; font-size: 14px; }
+        .sign { margin-top: 60px; display: flex; justify-content: space-between; font-size: 14px; }
+      </style>
+    </head>
+    <body>
+      <h2>${brand.toUpperCase()} - RESMİ TEKNİK HASAR VE ARIZA RAPORU</h2>
+      
+      <div class="section-title">1. Müşteri ve Cihaz Bilgileri</div>
+      <div class="grid-info">
+        <div><b>Müşteri Adı / Unvanı:</b> ${customer}</div>
+        <div><b>TC / Vergi Numarası:</b> ${taxNo}</div>
+        <div><b>Cihaz Model / Seri No:</b> ${model}</div>
+        <div><b>Arıza / Olay Tarihi:</b> ${dateTime}</div>
+        <div><b>Şebeke / Voltaj Durumu:</b> ${voltage}</div>
+      </div>
+
+      <div class="section-title">2. Uzun Uzadıya Teknik İnceleme ve Açıklamalar</div>
+      <div class="notes-box">
+        ${notes.replace(/\n/g, '<br>')}
+      </div>
+
+      <div class="section-title">3. Değişen Parça ve Kalem Dökümleri</div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 50px;">Sıra</th>
+            <th>Parça / İşlem Adı</th>
+            <th style="text-align:right; width: 150px;">Tutar</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${partsHtml !== '' ? partsHtml : '<tr><td colspan="3" style="text-align:center;">Parça eklenmedi.</td></tr>'}
+        </tbody>
+      </table>
+
+      <div style="text-align: right; font-size: 18px; font-weight: bold; margin-top: 20px;">
+        Genel Toplam: ${total}
+      </div>
+
+      <div class="sign">
+        <div><b>Servis Yetkilisi</b><br>Teknik Servis Departmanı<br><br>İmza / Kaşe</div>
+        <div><b>Müşteri Teslim Alan</b><br>${customer}<br><br>İmza</div>
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+// Sekme Geçişleri
+document.querySelectorAll('.nav').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.page).classList.add('active');
+  };
+});
 
 const brands = Object.keys(brandLogos);
 
