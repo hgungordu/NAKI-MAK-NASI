@@ -559,4 +559,66 @@ if (localStorage.getItem("tk_login") === "1") {
   $("#app").classList.remove("hidden");
   $("#userBadge").textContent = "admin";
   renderAll();
+  // --- PARÇA EKLEME VE HESAPLAMA SİSTEMİ ---
+
+// Sayfa yüklendiğinde veya form açıldığında ilk boş parça satırını ekler
+function initParts() {
+  const container = document.getElementById('partsContainer');
+  if (container && container.innerHTML === '') {
+    addPartRow();
+  }
+}
+
+// Yeni parça satırı ekleme
+function addPartRow(partName = '', partPrice = 0) {
+  const container = document.getElementById('partsContainer');
+  if (!container) return;
+
+  const row = document.createElement('div');
+  row.className = 'part-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Parça adı (Örn: Pompa, Kart, Rezistans)" class="p-name" value="${partName}" oninput="calculateTotals()">
+    <input type="number" placeholder="Fiyat (₺)" class="p-price" value="${partPrice}" min="0" step=".01" oninput="calculateTotals()">
+    <button type="button" class="danger-btn" onclick="removePartRow(this)">Sil</button>
+  `;
+  container.appendChild(row);
+  calculateTotals();
+}
+
+// Parça satırını silme
+function removePartRow(btn) {
+  btn.closest('.part-row').remove();
+  calculateTotals();
+  
+  // Eğer hiç satır kalmadıysa otomatik bir tane bırak
+  const container = document.getElementById('partsContainer');
+  if (container && container.children.length === 0) {
+    addPartRow();
+  }
+}
+
+// Tüm parça fiyatlarını toplayıp genel hesaba yansıtma
+function calculateTotals() {
+  let totalParts = 0;
+  document.querySelectorAll('.p-price').forEach(input => {
+    let val = parseFloat(input.value) || 0;
+    totalParts += val;
+  });
+
+  const partsInput = document.getElementById('partsTotalInput');
+  if (partsInput) {
+    partsInput.value = totalParts.toFixed(2);
+  }
+
+  // Genel toplam hesaplamasını tetikle (varsa ana hesap fonksiyonun)
+  if (typeof updateGrandTotal === 'function') {
+    updateGrandTotal();
+  }
+}
+
+// Sayfa açıldığında tetiklenmesi için
+document.addEventListener('DOMContentLoaded', () => {
+  initParts();
+});
+
 }
