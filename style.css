@@ -46,7 +46,7 @@ textarea{min-height:105px;resize:vertical}
 .row strong{display:block;margin-bottom:5px}
 .row small{color:var(--muted)}
 .search{max-width:320px}
-.notice{background:#fff8e6;border:1px solid #eedba6;padding:12px;border-radius:10px;font-size:13px;color:#725b1f}
+.notice{background:#fff8e6;border:1px solid #eedba6;padding:12px;border-radius:10px;font-size:13px;color:#725b1f;margin-bottom:15px}
 .topgap{margin-top:20px}
 .login{min-height:100vh;display:grid;place-items:center;background:#111827}
 .login-card{width:min(390px,92vw);background:white;padding:32px;border-radius:20px;text-align:center}
@@ -66,7 +66,6 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
 .report strong{display:block;font-size:28px;margin-top:6px}
 .status{padding:5px 8px;border-radius:15px;font-size:11px;background:#edf2f7}
 
-/* Mobil Hamburger & Overlay */
 .hamburger-btn {
   display: none;
   background: #253246;
@@ -92,9 +91,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
 }
 
 @media(max-width:1000px){
-  .hamburger-btn {
-    display: inline-block;
-  }
+  .hamburger-btn { display: inline-block; }
   .sidebar {
     position: fixed;
     top: 0;
@@ -104,13 +101,8 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
     transition: left 0.3s ease;
     width: 255px !important;
   }
-  .sidebar.open {
-    left: 0;
-  }
-  .brand div:not(.brandmark), .nav {
-    font-size: 14px !important;
-    text-align: left !important;
-  }
+  .sidebar.open { left: 0; }
+  .brand div:not(.brandmark), .nav { font-size: 14px !important; text-align: left !important; }
   .cards{grid-template-columns:1fr 1fr}
   .grid,.money{grid-template-columns:1fr 1fr}
   .reportgrid{grid-template-columns:1fr 1fr}
@@ -125,7 +117,5 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
   .row{grid-template-columns:1fr}
   .actions{justify-content:stretch}
   .actions button,.filebtn{width:100%;text-align:center}
-  input, textarea, select {
-    font-size: 16px !important;
-  }
+  input, textarea, select { font-size: 16px !important; }
 }
