@@ -1,179 +1,92 @@
-<!doctype html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Servis Tablet V3.0</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div id="login" class="login">
-  <div class="login-card">
-    <div class="brandmark big">S</div>
-    <h1>SERVİS YÖNETİMİ</h1>
-    <p>Servis Tablet V3.0</p>
-    <input id="loginUser" placeholder="Kullanıcı adı" value="admin">
-    <input id="loginPass" placeholder="Şifre" type="password" value="1234">
-    <button class="primary wide" onclick="login()">Giriş Yap</button>
-    <small>Demo kullanıcı: admin / 1234</small>
-  </div>
-</div>
+:root{--bg:#f3f5f8;--card:#fff;--text:#17202a;--muted:#718096;--line:#e1e6ed;--accent:#111827;--blue:#2563eb;--good:#087f5b;--warn:#9a6700;--danger:#b42318}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+.hidden{display:none!important}
+.app{display:flex;min-height:100vh}
+.sidebar{width:255px;background:#111827;color:white;padding:22px 15px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 25px}
+.brandmark{width:40px;height:40px;background:white;color:#111827;border-radius:11px;display:grid;place-items:center;font-weight:900;font-size:22px}
+.brandmark.big{margin:auto;width:58px;height:58px;font-size:30px}
+.brand b{display:block;letter-spacing:1px}
+.brand small{color:#9aa7b9}
+.nav{display:block;width:100%;border:0;background:none;color:#cbd5e1;text-align:left;padding:11px;border-radius:10px;cursor:pointer;margin:2px 0}
+.nav:hover,.nav.active{background:#283447;color:white}
+.side-note{margin-top:auto;color:#8491a4;font-size:12px}
+.logout{margin-top:8px;border:0;background:#253246;color:white;border-radius:8px;padding:8px 12px;cursor:pointer}
+.main{width:100%;max-width:1500px;margin:auto;padding:26px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:23px}
+.eyebrow{font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1.4px}
+h1{font-size:29px;margin:4px 0}
+h2{font-size:19px;margin:0}
+.header-actions{display:flex;align-items:center;gap:10px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:17px}
+.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 18px #00000007}
+.card{padding:20px}
+.card span{font-size:13px;color:var(--muted)}
+.card strong{display:block;font-size:27px;margin-top:7px}
+.panel{padding:20px}
+.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.primary,.ghost{border:0;border-radius:10px;padding:11px 16px;cursor:pointer}
+.primary{background:var(--accent);color:white}
+.ghost{background:#edf1f5;color:#263243}
+.page{display:none}
+.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:15px}
+label{font-size:12px;font-weight:700;color:#4b596a}
+input,select,textarea{width:100%;margin-top:7px;border:1px solid #d5dce5;border-radius:10px;padding:11px;background:white;color:var(--text);outline:none;user-select:text!important;touch-action:manipulation!important}
+textarea{min-height:105px;resize:vertical}
+.money{grid-template-columns:repeat(4,1fr)}
+.totalbox{padding:17px;background:#f1f4f7;border-radius:12px;display:flex;justify-content:space-between;margin:18px 0}
+.totalbox strong{font-size:22px}
+.actions{display:flex;justify-content:flex-end;gap:10px;align-items:center;margin-top:15px}
+.badge,.pill{display:inline-block;background:#eef2ff;color:#3949ab;padding:6px 9px;border-radius:20px;font-size:11px}
+.row{display:grid;grid-template-columns:1fr auto;gap:15px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center}
+.row:last-child{border:0}
+.row strong{display:block;margin-bottom:5px}
+.row small{color:var(--muted)}
+.search{max-width:320px}
+.notice{background:#fff8e6;border:1px solid #eedba6;padding:12px;border-radius:10px;font-size:13px;color:#725b1f;margin-bottom:15px}
+.topgap{margin-top:20px}
+.login{min-height:100vh;display:grid;place-items:center;background:#111827}
+.login-card{width:min(390px,92vw);background:white;padding:32px;border-radius:20px;text-align:center}
+.login-card h1{margin:10px 0 0}
+.login-card p{color:var(--muted);margin-top:5px}
+.login-card input{margin:7px 0}
+.wide{width:100%;margin:8px 0}
+.login-card small{color:var(--muted)}
+canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #aab4c3;border-radius:12px;background:#fff;margin-top:8px;touch-action:none}
+.signature-wrap{margin:10px 0}
+.photo{max-width:220px;border-radius:12px;margin-top:8px}
+.filebtn{display:inline-block;background:#edf1f5;border-radius:10px;padding:11px 15px;cursor:pointer}
+.filebtn input{display:none}
+.reportgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.report{padding:20px;border:1px solid var(--line);border-radius:13px}
+.report b{font-size:13px;color:var(--muted)}
+.report strong{display:block;font-size:28px;margin-top:6px}
+.status{padding:5px 8px;border-radius:15px;font-size:11px;background:#edf2f7}
 
-<div id="app" class="app hidden">
-<div id="overlay" class="overlay" onclick="toggleMobileMenu()"></div>
+.hamburger-btn { display:none; background:#253246; border:0; color:white; padding:8px 12px; border-radius:8px; font-size:20px; cursor:pointer; margin-right:12px; }
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99; }
+.overlay.active { display:block; }
 
-<aside class="sidebar">
- <div class="brand"><div class="brandmark">S</div><div><b id="sideBrandTitle">ÖZEL SERVİS</b><small>0850 885 00 82</small></div></div>
- <nav>
-  <button class="nav active" data-page="dashboard">🏠 Ana Panel</button>
-  <button class="nav" data-page="new">➕ Yeni Kayıt / Form</button>
-  <button class="nav" data-page="customers">👤 Müşteriler</button>
-  <button class="nav" data-page="history">🧾 Servis & Belgeler</button>
-  <button class="nav" data-page="parts">📦 Stok & Parça Kataloğu</button>
-  <button class="nav" data-page="codes">🔎 Arıza Kütüphanesi (A-Z)</button>
-  <button class="nav" data-page="reports">📊 Raporlar</button>
-  <button class="nav" data-page="settings">⚙️ Ayarlar</button>
- </nav>
- <div class="side-note">Teknik Destek<br><button class="logout" onclick="logout()">Çıkış</button></div>
-</aside>
+@media(max-width:1000px){
+  .hamburger-btn { display:inline-block; }
+  .sidebar { position:fixed; top:0; left:-270px; height:100vh; z-index:100; transition:left 0.3s ease; width:255px!important; }
+  .sidebar.open { left:0; }
+  .cards{grid-template-columns:1fr 1fr}
+  .grid,.money{grid-template-columns:1fr 1fr}
+  .reportgrid{grid-template-columns:1fr 1fr}
+}
 
-<main class="main">
-<header>
-  <div style="display: flex; align-items: center;">
-    <button class="hamburger-btn" onclick="toggleMobileMenu()">☰</button>
-    <div>
-      <span class="eyebrow" id="callCenterBadge">YETKİLİ / ÖZEL SERVİS HİZMETLERİ</span>
-      <h1 id="pageTitle">Servis Yönetimi</h1>
-    </div>
-  </div>
-  <div class="header-actions">
-    <span id="userBadge" class="pill"></span>
-    <button class="primary" onclick="nav('new')">+ Yeni Kayıt Oluştur</button>
-  </div>
-</header>
-
-<section id="dashboard" class="page active">
- <div class="cards">
-  <div class="card"><span>Toplam Kayıt</span><strong id="statServices">0</strong></div>
-  <div class="card"><span>Açık İşlemler</span><strong id="statOpen">0</strong></div>
-  <div class="card"><span>Müşteri Sayısı</span><strong id="statCustomers">0</strong></div>
-  <div class="card"><span>Toplam Hacim</span><strong id="statRevenue">₺0</strong></div>
- </div>
- <div class="panel"><div class="panelhead"><h2>Son İşlemler</h2><button class="ghost" onclick="nav('history')">Tümünü Gör</button></div><div id="recent"></div></div>
-</section>
-
-<section id="new" class="page"><div class="panel">
- <div class="panelhead"><h2>Yeni Kayıt / Belge Oluşturma</h2><span class="badge">Markaya Özel Dinamik Form & 2 Sayfa Sözleşme</span></div>
- <form id="serviceForm">
-  <!-- Genel Bilgiler -->
-  <div class="grid">
-   <label>Belge / İşlem Tipi
-     <select name="formType" id="formType" onchange="handleFormTypeChange()">
-       <option value="Servis Fişi">Servis / Tamir Fişi</option>
-       <option value="Fiyat Teklif Formu">Fiyat Teklif Formu</option>
-       <option value="Cihaz Değişim Formu">Cihaz Değişim Formu</option>
-       <option value="İade / Hurda Fişi">İade / Hurda Fişi</option>
-     </select>
-   </label>
-   <label>Müşteri Ad Soyad<input name="customer" required></label>
-   <label>Telefon<input name="phone" required></label>
-   <label>Adres<input name="address"></label>
-   <label>Marka<select name="brand" id="brand"></select></label>
-   <label>Ürün Grubu<select name="category" id="category"><option>Çamaşır Makinesi</option><option>Bulaşık Makinesi</option><option>Buzdolabı</option><option>Kurutma Makinesi</option><option>Fırın / Ocak</option><option>Klima</option><option>Diğer</option></select></label>
-   <label>Mevcut Cihaz Model<input name="model"></label>
-   <label>Seri No<input name="serial"></label>
-   <label>Garanti Durumu<select name="warranty"><option>Garanti Dışı</option><option>Garanti Dahili</option><option>Belirsiz</option></select></label>
-   <label>İşlem Durumu
-     <select name="status">
-       <option>Teklif Sunuldu</option>
-       <option>Bekliyor</option>
-       <option>Atandı</option>
-       <option>Yolda</option>
-       <option>İşlemde</option>
-       <option>Değişim Sürecinde</option>
-       <option>Tamamlandı</option>
-       <option>İptal / Reddedildi</option>
-     </select>
-   </label>
-   <label>Teknisyen
-     <select name="technician">
-       <option selected>Hannan Güngördü</option>
-     </select>
-   </label>
-  </div>
-
-  <!-- Dinamik Özel Alanlar -->
-  <div id="dynamicFields" class="grid" style="background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px dashed #cbd5e1; margin-bottom: 15px;"></div>
-
-  <!-- Açıklama ve Teşhis Alanları -->
-  <div class="grid">
-   <label>Müşteri Şikâyeti / Talep<textarea name="complaint" required></textarea></label>
-   <label>Teknisyen Tespiti / Teşhis<textarea name="diagnosis"></textarea></label>
-   <label>Yapılan İşlem / Detay Açıklama<textarea name="work"></textarea></label>
-   <label>Arıza Kodu / Kütüphane Notu<input name="code" placeholder="Örn. E18 / F3 / dE"></label>
-  </div>
-
-  <!-- Fiyat Hesaplama -->
-  <div class="grid money">
-   <label>Parça Bedeli<input type="number" min="0" step=".01" name="parts" value="0"></label>
-   <label>İşçilik Bedeli<input type="number" min="0" step=".01" name="labor" value="0"></label>
-   <label>Servis / Yol Ücreti<input type="number" min="0" step=".01" name="travel" value="0"></label>
-   <label>KDV %<input type="number" min="0" step=".01" name="vat" value="20"></label>
-  </div>
-
-  <label>Cihaz / Belge Görseli<input type="file" id="photo" accept="image/*"></label>
-  <div id="photoPreview"></div>
-  
-  <div class="totalbox">Genel Toplam <strong id="total">₺0,00</strong></div>
-
-  <!-- İmza Alanı -->
-  <div class="signature-wrap">
-    <div>
-      <b>Müşteri Onay İmzası (Mevcutsa)</b>
-      <canvas id="signature" width="600" height="180"></canvas>
-      <button type="button" class="ghost" onclick="clearSignature()">İmzayı Temizle</button>
-    </div>
-  </div>
-
-  <div class="actions"><button type="reset" class="ghost">Temizle</button><button class="primary">Kaydet ve Belgeyi Oluştur</button></div>
- </form>
-</div></section>
-
-<section id="customers" class="page"><div class="panel"><div class="panelhead"><h2>Müşteri Kartları</h2><input id="customerSearch" class="search" placeholder="Müşteri ara"></div><div id="customerList"></div></div></section>
-<section id="history" class="page"><div class="panel"><div class="panelhead"><h2>Servis ve Belge Geçmişi</h2><input id="historySearch" class="search" placeholder="No, müşteri, marka, model, işlem tipi"></div><div id="historyList"></div></div></section>
-
-<section id="parts" class="page">
-  <div class="panel">
-    <div class="panelhead">
-      <h2>Stok & Yedek Parça Kataloğu</h2>
-      <button class="primary" onclick="addPart()">+ Yeni Parça Ekle</button>
-    </div>
-    <input id="partSearch" class="search" style="margin-bottom:15px;" placeholder="Parça veya kategori ara...">
-    <div id="partsList"></div>
-  </div>
-</section>
-
-<section id="codes" class="page">
-  <div class="panel">
-    <div class="panelhead">
-      <h2>A'dan Z'ye Arıza Kodları Kütüphanesi</h2>
-      <input id="codeSearch" class="search" placeholder="Marka, kod veya arıza ara...">
-    </div>
-    <div class="notice">Tüm major markaların detaylı teknik arıza kodları.</div>
-    <div id="codeList"></div>
-  </div>
-</section>
-
-<section id="reports" class="page"><div class="panel"><div class="panelhead"><h2>Raporlar</h2><button class="primary" onclick="printReport()">Raporu Yazdır / PDF</button></div><div class="reportgrid" id="reportGrid"></div></div></section>
-
-<section id="settings" class="page"><div class="panel"><div class="panelhead"><h2>Ayarlar</h2></div>
- <div class="grid">
-  <label>Servis Başlığı Varsayılan<input id="setName" value="TEKNİK SERVİS HİZMETLERİ"></label>
-  <label>Telefon / Çağrı Merkezi<input id="setPhone" value="0850 885 00 82"></label>
-  <label>KDV Varsayılan %<input id="setVat" type="number" value="20"></label>
-  <label>Servis Ücreti Varsayılan<input id="setTravel" type="number" value="0"></label>
- </div>
- <button class="primary" onclick="saveSettings()">Ayarları Kaydet</button>
-</div></section>
-</main></div>
-<script src="app.js"></script>
-</body></html>
+@media(max-width:600px){
+  .main{padding:14px}
+  .cards,.grid,.money,.reportgrid{grid-template-columns:1fr}
+  .panel{padding:15px}
+  header{align-items:flex-start;gap:8px}
+  .header-actions .pill{display:none}
+  .row{grid-template-columns:1fr}
+  .actions{justify-content:stretch}
+  .actions button,.filebtn{width:100%;text-align:center}
+  input, textarea, select { font-size: 16px !important; }
+}
