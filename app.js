@@ -163,6 +163,64 @@ $("#photo").addEventListener("change", e => {
   r.onload = () => { photoData = r.result; $("#photoPreview").innerHTML = `<img class="photo" src="${photoData}">` };
   r.readAsDataURL(f);
 });
+function addPartRow() {
+  const container = document.getElementById('partsContainer');
+  const row = document.createElement('div');
+  row.className = 'part-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Parça Adı" class="p-name" oninput="calculate()">
+    <input type="number" placeholder="Fiyat" class="p-price" oninput="calculate()">
+    <button type="button" onclick="this.parentElement.remove();calculate()">Sil</button>
+  `;
+  container.appendChild(row);
+}
+
+function calculate() {
+  let total = 0;
+  document.querySelectorAll('.p-price').forEach(i => total += parseFloat(i.value) || 0);
+  document.getElementById('total').innerText = '₺' + total.toFixed(2);
+  updateWhatsAppMessage();
+}
+
+function updateWhatsAppMessage() {
+  const customer = document.getElementById('fCustomer').value || 'Sayın Müşterimiz';
+  const total = document.getElementById('total').innerText;
+  const parts = [];
+  document.querySelectorAll('.part-row').forEach(r => {
+    const name = r.querySelector('.p-name').value;
+    const price = r.querySelector('.p-price').value;
+    if(name) parts.push(`- ${name}: ₺${price}`);
+  });
+  
+  const msg = `HG TEKNİK SERVİS BİLGİLENDİRME
+Sayın ${customer},
+İşleminiz tamamlanmıştır.
+
+Parça Detayları:
+${parts.length > 0 ? parts.join('\n') : 'Değişen parça yok.'}
+
+Toplam Tutar: ${total}
+
+İyi günler dileriz.
+HG Teknik`;
+  
+  document.getElementById('whatsappPreview').value = msg;
+  const phone = document.getElementById('fPhone').value.replace(/\D/g, '');
+  if(phone) {
+    document.getElementById('whatsappSendBtn').href = `https://wa.me/9${phone}?text=${encodeURIComponent(msg)}`;
+  }
+}
+
+// Navigasyon
+document.querySelectorAll('.nav').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.page).classList.add('active');
+  };
+});
+
 
 $("#serviceForm").addEventListener("submit", e => {
   e.preventDefault();
