@@ -8,15 +8,60 @@ const demoCodes=[
 ];
 let services=JSON.parse(localStorage.getItem("tk_services")||"[]");
 let parts=JSON.parse(localStorage.getItem("tk_parts")||JSON.stringify([{name:"Pompa",stock:3,price:950},{name:"Rezistans",stock:5,price:850}]));
-let settings=JSON.parse(localStorage.getItem("tk_settings")||'{"name":"TEKNOTEM SERVİS","phone":"","vat":20,"travel":0}');
+let settings=JSON.parse(localStorage.getItem("tk_settings")||'{"name":"TEKNİK SERVİS HİZMETLERİ","phone":"0850 885 00 82","vat":20,"travel":0}');
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const money=n=>new Intl.NumberFormat("tr-TR",{style:"currency",currency:"TRY"}).format(+n||0);
 const esc=x=>String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 function persist(){localStorage.setItem("tk_services",JSON.stringify(services));localStorage.setItem("tk_parts",JSON.stringify(parts));localStorage.setItem("tk_settings",JSON.stringify(settings))}
 function login(){if($("#loginUser").value&&$("#loginPass").value){localStorage.setItem("tk_login","1");$("#login").classList.add("hidden");$("#app").classList.remove("hidden");$("#userBadge").textContent=$("#loginUser").value;renderAll()}}
 function logout(){localStorage.removeItem("tk_login");location.reload()}
-function nav(p){$$(".page").forEach(x=>x.classList.toggle("active",x.id===p));$$(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===p));const t={dashboard:"Ana Panel",new:"Yeni Servis",customers:"Müşteriler",history:"Servisler",parts:"Stok / Parçalar",codes:"Arıza Kodları",reports:"Raporlar",settings:"Ayarlar"};$("#pageTitle").textContent=t[p];renderAll()}
+
+// Hamburger menü aç/kapat
+function toggleMobileMenu() {
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("overlay");
+  if (sidebar && overlay) {
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("active");
+  }
+}
+
+function nav(p){
+  $$(".page").forEach(x=>x.classList.toggle("active",x.id===p));
+  $$(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===p));
+  const t={dashboard:"Ana Panel",new:"Yeni Servis",customers:"Müşteriler",history:"Servisler",parts:"Stok / Parçalar",codes:"Arıza Kodları",reports:"Raporlar",settings:"Ayarlar"};
+  
+  const currentBrand = $("#brand") ? $("#brand").value : "";
+  if (p === "new" && currentBrand) {
+    $("#pageTitle").textContent = currentBrand.toUpperCase() + " TEKNİK SERVİS HİZMETLERİ";
+  } else {
+    $("#pageTitle").textContent = t[p];
+  }
+
+  // Mobil menüyü kapat
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("overlay");
+  if(sidebar) sidebar.classList.remove("open");
+  if(overlay) overlay.classList.remove("active");
+
+  renderAll();
+}
 $$(".nav").forEach(b=>b.onclick=()=>nav(b.dataset.page));
+
+// Marka seçilince başlığı dinamik güncelleme
+function updateBrandTitle(brandName) {
+  if (!brandName) return;
+  const titleText = brandName.toUpperCase() + " TEKNİK SERVİS HİZMETLERİ";
+  const pageTitle = $("#pageTitle");
+  if (pageTitle && document.querySelector("#new.page.active")) {
+    pageTitle.textContent = titleText;
+  }
+  const sideBrand = $("#sideBrandTitle");
+  if (sideBrand) {
+    sideBrand.textContent = brandName.toUpperCase() + " SERVİS";
+  }
+}
+
 function calc(){const f=$("#serviceForm");if(!f)return;const d=new FormData(f),base=+d.get("parts")+ +d.get("labor")+ +d.get("travel"),tot=base*(1+(+d.get("vat")||0)/100);$("#total").textContent=money(tot)}
 $("#serviceForm").addEventListener("input",calc);
 $("#serviceForm").addEventListener("reset",()=>setTimeout(()=>{clearSignature();$("#photoPreview").innerHTML="";calc()},30));
@@ -42,26 +87,27 @@ function renderSettings(){$("#setName").value=settings.name;$("#setPhone").value
 function saveSettings(){settings={name:$("#setName").value,phone:$("#setPhone").value,vat:+$("#setVat").value||0,travel:+$("#setTravel").value||0};persist();alert("Ayarlar kaydedildi")}
 function exportBackup(){const blob=new Blob([JSON.stringify({services,parts,settings},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="teknotem-yedek-"+new Date().toISOString().slice(0,10)+".json";a.click()}
 function importBackup(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);services=x.services||[];parts=x.parts||[];settings=x.settings||settings;persist();renderAll();alert("Yedek yüklendi")}catch{alert("Geçersiz yedek")}};r.readAsText(f)}
-function printReport(){const w=open("","_blank");w.document.write(`<html><body style="font-family:Arial;margin:40px"><h1>${esc(settings.name)}</h1><h2>Servis Raporu</h2><p>Toplam servis: ${services.length}</p><p>Toplam ciro: ${money(services.reduce((a,s)=>a+(+s.total||0),0))}</p><p>Tamamlanan: ${services.filter(s=>s.status==="Tamamlandı").length}</p><script>print()<\/script></body></html>`);w.document.close()}
-window.printService=function(id){const s=services.find(x=>x.id===id);if(!s)return;const w=open("","_blank");w.document.write(`<html lang="tr"><head><meta charset="UTF-8"><title>${esc(s.no)}</title><style>body{font-family:Arial;margin:32px;color:#111}.top{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:14px}h1{margin:0}.box{border:1px solid #bbb;padding:12px;margin:12px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.label{font-size:10px;color:#666}.v{font-weight:bold;margin:4px 0}table{width:100%;border-collapse:collapse}td,th{border:1px solid #bbb;padding:8px}.total{text-align:right;font-size:20px;font-weight:bold;margin:15px 0}.sign{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:60px}.photo{max-width:250px}@media print{button{display:none}}</style></head><body><div class="top"><div><h1>${esc(settings.name)}</h1><div>TEKNİK SERVİS FORMU</div></div><div><b>${esc(s.no)}</b><br>${new Date(s.date).toLocaleString("tr-TR")}</div></div><div class="box grid"><div><div class="label">MÜŞTERİ</div><div class="v">${esc(s.customer)}</div>${esc(s.phone)}<br>${esc(s.address)}</div><div><div class="label">CİHAZ</div><div class="v">${esc(s.brand)} • ${esc(s.category)}</div>Model: ${esc(s.model)}<br>Seri No: ${esc(s.serial)}<br>Garanti: ${esc(s.warranty)}</div></div><div class="box"><b>Şikâyet</b><p>${esc(s.complaint)}</p><b>Tespit</b><p>${esc(s.diagnosis)}</p><b>Yapılan İşlem</b><p>${esc(s.work)}</p><b>Arıza Kodu:</b> ${esc(s.code||"-")}</div><table><tr><th>Kalem</th><th>Tutar</th></tr><tr><td>Parça</td><td>${money(s.parts)}</td></tr><tr><td>İşçilik</td><td>${money(s.labor)}</td></tr><tr><td>Servis</td><td>${money(s.travel)}</td></tr><tr><td>KDV</td><td>%${esc(s.vat)}</td></tr></table><div class="total">GENEL TOPLAM: ${money(s.total)}</div>${s.photo?`<img class="photo" src="${s.photo}">`:""}<div class="box">Bu belge ${esc(settings.name)} tarafından oluşturulan servis kaydıdır; üretici adına düzenlenmiş resmi yetkili servis belgesi değildir.</div><div class="sign"><div>Müşteri Onayı / İmza<br>${s.signature?`<img src="${s.signature}" style="max-width:260px">`:""}</div><div>Teknisyen / İmza</div></div><script>print()<\/script></body></html>`);w.document.close()};
-function renderAll(){renderDash();renderHistory();renderCustomers();renderParts();renderCodes();renderReports();renderSettings()}
-$("#historySearch").oninput=renderHistory;$("#customerSearch").oninput=renderCustomers;$("#codeSearch").oninput=renderCodes;
-$("#brand").innerHTML=brands.map(x=>`<option>${x}</option>`).join("");
-$("#serviceForm").querySelector('[name="vat"]').value=settings.vat;$("#serviceForm").querySelector('[name="travel"]').value=settings.travel;calc();
-if(localStorage.getItem("tk_login")==="1"){$("#login").classList.add("hidden");$("#app").classList.remove("hidden");$("#userBadge").textContent="admin";renderAll()}
-// Hamburger Menü Aç / Kapat Fonksiyonu
-function toggleMobileMenu() {
-  const sidebar = document.querySelector(".sidebar");
-  const overlay = document.getElementById("overlay");
-  
-  sidebar.classList.toggle("open");
-  overlay.classList.toggle("active");
-}
+function printReport(){const w=open("","_blank");w.document.write(`<html><body style="font-family:Arial;margin:40px"><h1>${esc(settings.name)}</h1><h2>Servis Raporu</h2><p>Çağrı Merkezi: 0850 885 00 82</p><p>Toplam servis: ${services.length}</p><p>Toplam ciro: ${money(services.reduce((a,s)=>a+(+s.total||0),0))}</p><p>Tamamlanan: ${services.filter(s=>s.status==="Tamamlandı").length}</p><script>print()<\/script></body></html>`);w.document.close()}
 
-// Menüdeki bir sayfaya tıklandığında yan menüyü otomatik kapat
-document.querySelectorAll(".nav").forEach(b => {
-  b.addEventListener("click", () => {
-    document.querySelector(".sidebar").classList.remove("open");
-    document.getElementById("overlay").classList.remove("active");
-  });
-});
+window.printService=function(id){
+  const s=services.find(x=>x.id===id);
+  if(!s)return;
+  const brandTitle = s.brand ? s.brand.toUpperCase() + " TEKNİK SERVİS HİZMETLERİ" : "TEKNİK SERVİS HİZMETLERİ";
+  const w=open("","_blank");
+  w.document.write(`<html lang="tr"><head><meta charset="UTF-8"><title>${esc(s.no)}</title><style>body{font-family:Arial;margin:32px;color:#111}.top{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:14px}h1{margin:0;font-size:22px}.box{border:1px solid #bbb;padding:12px;margin:12px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.label{font-size:10px;color:#666}.v{font-weight:bold;margin:4px 0}table{width:100%;border-collapse:collapse}td,th{border:1px solid #bbb;padding:8px}.total{text-align:right;font-size:20px;font-weight:bold;margin:15px 0}.sign{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:60px}.photo{max-width:250px}@media print{button{display:none}}</style></head><body><div class="top"><div><h1>${esc(brandTitle)}</h1><div style="color:#2563eb;font-weight:bold;margin-top:4px;">Çağrı Merkezi: 0850 885 00 82</div></div><div><b>${esc(s.no)}</b><br>${new Date(s.date).toLocaleString("tr-TR")}</div></div><div class="box grid"><div><div class="label">MÜŞTERİ</div><div class="v">${esc(s.customer)}</div>${esc(s.phone)}<br>${esc(s.address)}</div><div><div class="label">CİHAZ</div><div class="v">${esc(s.brand)} • ${esc(s.category)}</div>Model: ${esc(s.model)}<br>Seri No: ${esc(s.serial)}<br>Garanti: ${esc(s.warranty)}</div></div><div class="box"><b>Şikâyet</b><p>${esc(s.complaint)}</p><b>Tespit</b><p>${esc(s.diagnosis)}</p><b>Yapılan İşlem</b><p>${esc(s.work)}</p><b>Arıza Kodu:</b> ${esc(s.code||"-")}</div><table><tr><th>Kalem</th><th>Tutar</th></tr><tr><td>Parça</td><td>${money(s.parts)}</td></tr><tr><td>İşçilik</td><td>${money(s.labor)}</td></tr><tr><td>Servis</td><td>${money(s.travel)}</td></tr><tr><td>KDV</td><td>%${esc(s.vat)}</td></tr></table><div class="total">GENEL TOPLAM: ${money(s.total)}</div>${s.photo?`<img class="photo" src="${s.photo}">`:""}<div class="box">Bu belge yetkili servis belgesi olmayıp özel teknik servis hizmet formu yerine geçer. Çağrı Merkezi: 0850 885 00 82</div><div class="sign"><div>Müşteri Onayı / İmza<br>${s.signature?`<img src="${s.signature}" style="max-width:260px">`:""}</div><div>Teknisyen / İmza</div></div><script>print()<\/script></body></html>`);
+  w.document.close();
+};
+
+function renderAll(){renderDash();renderHistory();renderCustomers();renderParts();renderCodes();renderReports();renderSettings()}
+$("#historySearch").oninput=renderHistory;
+$("#customerSearch").oninput=renderCustomers;
+$("#codeSearch").oninput=renderCodes;
+
+$("#brand").innerHTML=brands.map(x=>`<option>${x}</option>`).join("");
+$("#brand").addEventListener("change", (e)=> updateBrandTitle(e.target.value));
+
+$("#serviceForm").querySelector('[name="vat"]').value=settings.vat;
+$("#serviceForm").querySelector('[name="travel"]').value=settings.travel;
+calc();
+
+if(localStorage.getItem("tk_login")==="1"){$("#login").classList.add("hidden");$("#app").classList.remove("hidden");$("#userBadge").textContent="admin";renderAll()}
