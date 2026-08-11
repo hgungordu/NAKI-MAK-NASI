@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Servis Tablet V3.0</title>
+<title>Servis Tablet V3.0 - Profesyonel Mod</title>
 <style>
 :root{--bg:#f3f5f8;--card:#fff;--text:#17202a;--muted:#718096;--line:#e1e6ed;--accent:#111827;--blue:#2563eb;--good:#087f5b;--warn:#9a6700;--danger:#b42318}
 *{box-sizing:border-box}
@@ -33,10 +33,12 @@ h2{font-size:19px;margin:0}
 .card strong{display:block;font-size:27px;margin-top:7px}
 .panel{padding:20px}
 .panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
-.primary,.ghost,.danger-btn{border:0;border-radius:10px;padding:11px 16px;cursor:pointer}
+.primary,.ghost,.danger-btn,.whatsapp-btn{border:0;border-radius:10px;padding:11px 16px;cursor:pointer;font-weight:600}
 .primary{background:var(--accent);color:white}
 .ghost{background:#edf1f5;color:#263243}
 .danger-btn{background:#fee2e2;color:#991b1b}
+.whatsapp-btn{background:#25d366;color:white;display:inline-flex;align-items:center;gap:8px;text-decoration:none;}
+.whatsapp-btn:hover{background:#1ebe5d;}
 .page{display:none}
 .page.active{display:block}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:15px}
@@ -54,7 +56,6 @@ textarea{min-height:105px;resize:vertical}
 .row small{color:var(--muted)}
 .search{max-width:320px}
 .notice{background:#fff8e6;border:1px solid #eedba6;padding:12px;border-radius:10px;font-size:13px;color:#725b1f;margin-bottom:15px}
-.topgap{margin-top:20px}
 .login{min-height:100vh;display:grid;place-items:center;background:#111827}
 .login-card{width:min(390px,92vw);background:white;padding:32px;border-radius:20px;text-align:center}
 .login-card h1{margin:10px 0 0}
@@ -115,7 +116,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
 <div id="overlay" class="overlay" onclick="toggleMobileMenu()"></div>
 
 <aside class="sidebar">
- <div class="brand"><div class="brandmark">S</div><div><b id="sideBrandTitle">ÖZEL SERVİS</b><small>0850 885 00 82</small></div></div>
+ <div class="brand"><div class="brandmark">S</div><div><b id="sideBrandTitle">HG TEKNİK SERVİS</b><small>0850 885 00 82</small></div></div>
  <nav>
   <button class="nav active" data-page="dashboard">🏠 Ana Panel</button>
   <button class="nav" data-page="new">➕ Yeni Kayıt / Form</button>
@@ -155,7 +156,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
 </section>
 
 <section id="new" class="page"><div class="panel">
- <div class="panelhead"><h2>Yeni Kayıt / Belge Oluşturma</h2><span class="badge">Markaya Özel Dinamik Form & 2 Sayfa Sözleşme</span></div>
+ <div class="panelhead"><h2>Yeni Kayıt / Belge Oluşturma</h2><span class="badge">Kurumsal Yetkili Servis Modu</span></div>
  <form id="serviceForm">
   <div class="grid">
    <label>Belge / İşlem Tipi
@@ -166,8 +167,8 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
        <option value="İade / Hurda Fişi">İade / Hurda Fişi</option>
      </select>
    </label>
-   <label>Müşteri Ad Soyad<input name="customer" required></label>
-   <label>Telefon<input name="phone" required></label>
+   <label>Müşteri Ad Soyad<input name="customer" id="fCustomer" required></label>
+   <label>Telefon<input name="phone" id="fPhone" required placeholder="05XXXXXXXXX"></label>
    <label>Adres<input name="address"></label>
    <label>Marka<select name="brand" id="brand"></select></label>
    <label>Ürün Grubu<select name="category" id="category"><option>Çamaşır Makinesi</option><option>Bulaşık Makinesi</option><option>Buzdolabı</option><option>Kurutma Makinesi</option><option>Fırın / Ocak</option><option>Klima</option><option>Diğer</option></select></label>
@@ -175,7 +176,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
    <label>Seri No<input name="serial"></label>
    <label>Garanti Durumu<select name="warranty"><option>Garanti Dışı</option><option>Garanti Dahili</option><option>Belirsiz</option></select></label>
    <label>İşlem Durumu
-     <select name="status">
+     <select name="status" id="fStatus">
        <option>Teklif Sunuldu</option>
        <option>Bekliyor</option>
        <option>Atandı</option>
@@ -198,14 +199,14 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
    <label>Arıza Kodu / Kütüphane Notu<input name="code" placeholder="Örn. E18 / F3 / dE"></label>
   </div>
 
-  <!-- DEĞİŞEN PARÇALAR SEKSİYONU -->
+  <!-- DEĞİŞEN PARÇALAR SEKSİYONU (Kalem Kalem Döküm) -->
   <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-      <label style="font-size: 14px; font-weight: 800; color: var(--text);">Değişen Parçalar ve Fiyatları</label>
+      <label style="font-size: 14px; font-weight: 800; color: var(--text);">Değişen Parçalar (Faturada Kalem Kalem Görünür)</label>
       <button type="button" class="ghost" onclick="addPartRow()">+ Parça Ekle</button>
     </div>
     <div id="partsContainer">
-      <!-- Dinamik parça satırları buraya gelecek -->
+      <!-- Dinamik parça satırları -->
     </div>
   </div>
 
@@ -226,6 +227,17 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
       <b>Müşteri Onay İmzası (Mevcutsa)</b>
       <canvas id="signature" width="600" height="180"></canvas>
       <button type="button" class="ghost" onclick="clearSignature()">İmzayı Temizle</button>
+    </div>
+  </div>
+
+  <!-- OTOMATİK WHATSAPP MESAJI ALANI -->
+  <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+    <label style="color: #166534; font-size: 14px; font-weight: 800; display: block; margin-bottom: 8px;">📲 Müşteriye WhatsApp Bilgilendirme Mesajı</label>
+    <textarea id="whatsappPreview" style="background: white; font-size: 13px; color: #1e293b;" readonly></textarea>
+    <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+      <a id="whatsappSendBtn" href="#" target="_blank" class="whatsapp-btn" style="pointer-events: none; opacity: 0.6;">
+        💬 Tek Tuşla WhatsApp'tan Gönder
+      </a>
     </div>
   </div>
 
@@ -262,7 +274,7 @@ canvas{display:block;width:100%;max-width:600px;height:180px;border:1px dashed #
 
 <section id="settings" class="page"><div class="panel"><div class="panelhead"><h2>Ayarlar</h2></div>
  <div class="grid">
-  <label>Servis Başlığı Varsayılan<input id="setName" value="TEKNİK SERVİS HİZMETLERİ"></label>
+  <label>Servis Başlığı Varsayılan<input id="setName" value="HG TEKNİK SERVİS"></label>
   <label>Telefon / Çağrı Merkezi<input id="setPhone" value="0850 885 00 82"></label>
   <label>KDV Varsayılan %<input id="setVat" type="number" value="20"></label>
   <label>Servis Ücreti Varsayılan<input id="setTravel" type="number" value="0"></label>
