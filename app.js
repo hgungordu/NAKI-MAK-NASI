@@ -49,3 +49,19 @@ $("#historySearch").oninput=renderHistory;$("#customerSearch").oninput=renderCus
 $("#brand").innerHTML=brands.map(x=>`<option>${x}</option>`).join("");
 $("#serviceForm").querySelector('[name="vat"]').value=settings.vat;$("#serviceForm").querySelector('[name="travel"]').value=settings.travel;calc();
 if(localStorage.getItem("tk_login")==="1"){$("#login").classList.add("hidden");$("#app").classList.remove("hidden");$("#userBadge").textContent="admin";renderAll()}
+// Hamburger Menü Aç / Kapat Fonksiyonu
+function toggleMobileMenu() {
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("overlay");
+  
+  sidebar.classList.toggle("open");
+  overlay.classList.toggle("active");
+}
+
+// Menüdeki bir sayfaya tıklandığında yan menüyü otomatik kapat
+document.querySelectorAll(".nav").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelector(".sidebar").classList.remove("open");
+    document.getElementById("overlay").classList.remove("active");
+  });
+});
