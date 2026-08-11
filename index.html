@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TEKNOTEM Servis Tablet V2</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="login" class="login">
+  <div class="login-card"><div class="brandmark big">T</div><h1>TEKNOTEM</h1><p>Servis Tablet V2</p>
+    <input id="loginUser" placeholder="Kullanıcı adı" value="admin">
+    <input id="loginPass" placeholder="Şifre" type="password" value="1234">
+    <button class="primary wide" onclick="login()">Giriş Yap</button>
+    <small>Demo kullanıcı: admin / 1234</small>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+<aside class="sidebar">
+ <div class="brand"><div class="brandmark">T</div><div><b>TEKNOTEM</b><small>Servis Tablet V2</small></div></div>
+ <nav>
+  <button class="nav active" data-page="dashboard">🏠 Ana Panel</button>
+  <button class="nav" data-page="new">➕ Yeni Servis</button>
+  <button class="nav" data-page="customers">👤 Müşteriler</button>
+  <button class="nav" data-page="history">🧾 Servisler</button>
+  <button class="nav" data-page="parts">📦 Stok / Parçalar</button>
+  <button class="nav" data-page="codes">🔎 Arıza Kodları</button>
+  <button class="nav" data-page="reports">📊 Raporlar</button>
+  <button class="nav" data-page="settings">⚙️ Ayarlar</button>
+ </nav>
+ <div class="side-note">V2 • Yerel + bulut entegrasyonuna hazır<br><button class="logout" onclick="logout()">Çıkış</button></div>
+</aside>
+
+<main class="main">
+<header><div><span class="eyebrow">TEKNİK SERVİS YÖNETİMİ</span><h1 id="pageTitle">Ana Panel</h1></div><div class="header-actions"><span id="userBadge" class="pill"></span><button class="primary" onclick="nav('new')">+ Yeni Servis</button></div></header>
+
+<section id="dashboard" class="page active">
+ <div class="cards">
+  <div class="card"><span>Toplam Servis</span><strong id="statServices">0</strong></div>
+  <div class="card"><span>Açık Servis</span><strong id="statOpen">0</strong></div>
+  <div class="card"><span>Müşteri</span><strong id="statCustomers">0</strong></div>
+  <div class="card"><span>Ciro</span><strong id="statRevenue">₺0</strong></div>
+ </div>
+ <div class="panel"><div class="panelhead"><h2>Son Servisler</h2><button class="ghost" onclick="nav('history')">Tümünü Gör</button></div><div id="recent"></div></div>
+</section>
+
+<section id="new" class="page"><div class="panel">
+ <div class="panelhead"><h2>Yeni Servis Kaydı</h2><span class="badge">Otomatik numara + imza</span></div>
+ <form id="serviceForm">
+  <div class="grid">
+   <label>Müşteri Ad Soyad<input name="customer" required></label><label>Telefon<input name="phone" required></label>
+   <label>Adres<input name="address"></label><label>Marka<select name="brand" id="brand"></select></label>
+   <label>Ürün Grubu<select name="category"><option>Çamaşır Makinesi</option><option>Bulaşık Makinesi</option><option>Buzdolabı</option><option>Kurutma Makinesi</option><option>Fırın</option><option>Klima</option><option>Ocak</option><option>Diğer</option></select></label>
+   <label>Model<input name="model"></label><label>Seri No<input name="serial"></label>
+   <label>Garanti<select name="warranty"><option>Garanti Dışı</option><option>Garanti Dahili</option><option>Belirsiz</option></select></label>
+   <label>Servis Durumu<select name="status"><option>Bekliyor</option><option>Atandı</option><option>Yolda</option><option>İşlemde</option><option>Tamamlandı</option><option>İptal</option></select></label>
+   <label>Teknisyen<select name="technician"><option>Admin</option><option>Teknisyen 1</option><option>Teknisyen 2</option></select></label>
+  </div>
+  <div class="grid">
+   <label>Müşteri Şikâyeti<textarea name="complaint" required></textarea></label><label>Teknisyen Tespiti<textarea name="diagnosis"></textarea></label>
+   <label>Yapılan İşlem<textarea name="work"></textarea></label><label>Arıza Kodu<input name="code" placeholder="Örn. E18"></label>
+  </div>
+  <div class="grid money">
+   <label>Parça Bedeli<input type="number" min="0" step=".01" name="parts" value="0"></label>
+   <label>İşçilik<input type="number" min="0" step=".01" name="labor" value="0"></label>
+   <label>Servis Ücreti<input type="number" min="0" step=".01" name="travel" value="0"></label>
+   <label>KDV %<input type="number" min="0" step=".01" name="vat" value="20"></label>
+  </div>
+  <label>Cihaz Fotoğrafı<input type="file" id="photo" accept="image/*"></label>
+  <div id="photoPreview"></div>
+  <div class="totalbox">Genel Toplam <strong id="total">₺0,00</strong></div>
+  <div class="signature-wrap"><div><b>Müşteri İmzası</b><canvas id="signature" width="600" height="180"></canvas><button type="button" class="ghost" onclick="clearSignature()">İmzayı Temizle</button></div></div>
+  <div class="actions"><button type="reset" class="ghost">Temizle</button><button class="primary">Servisi Kaydet</button></div>
+ </form>
+</div></section>
+
+<section id="customers" class="page"><div class="panel"><div class="panelhead"><h2>Müşteri Kartları</h2><input id="customerSearch" class="search" placeholder="Müşteri ara"></div><div id="customerList"></div></div></section>
+<section id="history" class="page"><div class="panel"><div class="panelhead"><h2>Servis Geçmişi</h2><input id="historySearch" class="search" placeholder="No, müşteri, marka, model"></div><div id="historyList"></div></div></section>
+
+<section id="parts" class="page"><div class="panel"><div class="panelhead"><h2>Stok / Parçalar</h2><button class="primary" onclick="addPart()">+ Parça Ekle</button></div><div id="partsList"></div></div></section>
+<section id="codes" class="page"><div class="panel"><div class="panelhead"><h2>Arıza Kodları</h2><input id="codeSearch" class="search" placeholder="Marka, model, kod veya açıklama"></div><div class="notice">Kodlar örnek başlangıç verisidir. Üretici/model servis dokümanından doğrulanmadan teknik karar için kullanılmamalıdır.</div><div id="codeList"></div></div></section>
+
+<section id="reports" class="page"><div class="panel"><div class="panelhead"><h2>Raporlar</h2><button class="primary" onclick="printReport()">Raporu Yazdır / PDF</button></div><div class="reportgrid" id="reportGrid"></div></div></section>
+
+<section id="settings" class="page"><div class="panel"><div class="panelhead"><h2>Ayarlar</h2></div>
+ <div class="grid">
+  <label>Servis Adı<input id="setName" value="TEKNOTEM SERVİS"></label><label>Telefon<input id="setPhone" value=""></label>
+  <label>KDV Varsayılan %<input id="setVat" type="number" value="20"></label><label>Servis Ücreti Varsayılan<input id="setTravel" type="number" value="0"></label>
+ </div>
+ <button class="primary" onclick="saveSettings()">Ayarları Kaydet</button>
+ <div class="notice topgap">Bulut yedekleme için Firebase/Supabase bağlantısı bu V2'nin sonraki entegrasyon katmanına bağlanabilir. Bu sürüm cihaz içi veri kaybını önlemek için JSON yedekleme/içe aktarma sunar.</div>
+ <div class="actions"><button class="ghost" onclick="exportBackup()">JSON Yedeği Al</button><label class="filebtn">JSON Yedeği Yükle<input type="file" accept=".json" onchange="importBackup(event)"></label></div>
+</div></section>
+</main></div>
+<script src="app.js"></script>
+</body></html>
