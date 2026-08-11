@@ -16,7 +16,8 @@
 </div>
 
 <div id="app" class="app hidden">
-  <div id="overlay" class="overlay" onclick="toggleMobileMenu()"></div>
+<!-- Mobil Arka Plan Karartması -->
+<div id="overlay" class="overlay" onclick="toggleMobileMenu()"></div>
 
 <aside class="sidebar">
  <div class="brand"><div class="brandmark">T</div><div><b>TEKNOTEM</b><small>Servis Tablet V2</small></div></div>
@@ -34,7 +35,20 @@
 </aside>
 
 <main class="main">
-<header><div><span class="eyebrow">TEKNİK SERVİS YÖNETİMİ</span><h1 id="pageTitle">Ana Panel</h1></div><div class="header-actions"><span id="userBadge" class="pill"></span><button class="primary" onclick="nav('new')">+ Yeni Servis</button></div></header>
+<!-- Header (Hamburger Butonlu) -->
+<header>
+  <div style="display: flex; align-items: center;">
+    <button class="hamburger-btn" onclick="toggleMobileMenu()">☰</button>
+    <div>
+      <span class="eyebrow">TEKNİK SERVİS YÖNETİMİ</span>
+      <h1 id="pageTitle">Ana Panel</h1>
+    </div>
+  </div>
+  <div class="header-actions">
+    <span id="userBadge" class="pill"></span>
+    <button class="primary" onclick="nav('new')">+ Yeni Servis</button>
+  </div>
+</header>
 
 <section id="dashboard" class="page active">
  <div class="cards">
